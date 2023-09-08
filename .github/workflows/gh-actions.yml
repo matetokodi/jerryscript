@@ -37,8 +37,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
-        with:
-          python-version: '2.7' # needed by jerry-debugger
       - run: $RUNNER -q --jerry-tests
       - run: $RUNNER -q --jerry-tests --build-debug
       - run: $RUNNER -q --jerry-debugger
@@ -79,8 +77,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: sudo apt update
-      - run: sudo apt install python2
       - run: $RUNNER --test262 update
       - uses: actions/upload-artifact@v2
         if: success() || failure()
@@ -93,8 +89,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: sudo apt update
-      - run: sudo apt install python2
       - run: $RUNNER --test262 update --build-debug --test262-test-list=built-ins,annexB,harness,intl402
       - uses: actions/upload-artifact@v2
         if: success() || failure()
@@ -107,8 +101,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: sudo apt update
-      - run: sudo apt install python2
       - run: $RUNNER --test262 update --build-debug --test262-test-list=language
       - uses: actions/upload-artifact@v2
         if: success() || failure()
