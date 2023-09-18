@@ -43,7 +43,7 @@
 from __future__ import print_function
 
 import logging
-import optparse
+import argparse
 import os
 from os import path
 import platform
@@ -339,36 +339,37 @@ def report_error(error_string):
 
 
 def build_options():
-    result = optparse.OptionParser()
-    result.add_option("--command", default=None,
-                      help="The command-line to run")
-    result.add_option("--tests", default=path.abspath('.'),
-                      help="Path to the tests")
-    result.add_option("--exclude-list", default=None,
-                      help="Path to the excludelist.xml file")
-    result.add_option("--cat", default=False, action="store_true",
-                      help="Print packaged test code that would be run")
-    result.add_option("--summary", default=False, action="store_true",
-                      help="Print summary after running tests")
-    result.add_option("--full-summary", default=False, action="store_true",
-                      help="Print summary and test output after running tests")
-    result.add_option("--strict_only", default=False, action="store_true",
-                      help="Test only strict mode")
-    result.add_option("--non_strict_only", default=False, action="store_true",
-                      help="Test only non-strict mode")
-    result.add_option("--unmarked_default", default="both",
-                      help="default mode for tests of unspecified strictness")
-    result.add_option("-j", "--job-count", default=None, action="store", type=int,
-                      help="Number of parallel test jobs to run. In case of '0' cpu count is used.")
-    result.add_option("--logname", help="Filename to save stdout to")
-    result.add_option("--loglevel", default="warning",
-                      help="sets log level to debug, info, warning, error, or critical")
-    result.add_option("--print-handle", default="print",
-                      help="Command to print from console")
-    result.add_option("--list-includes", default=False, action="store_true",
-                      help="List includes required by tests")
-    result.add_option("--module-flag", default="-m",
-                      help="List includes required by tests")
+    result = argparse.ArgumentParser()
+    result.add_argument("--command", default=None,
+                        help="The command-line to run")
+    result.add_argument("--tests", default=path.abspath('.'),
+                        help="Path to the tests")
+    result.add_argument("--exclude-list", default=None,
+                        help="Path to the excludelist.xml file")
+    result.add_argument("--cat", default=False, action="store_true",
+                        help="Print packaged test code that would be run")
+    result.add_argument("--summary", default=False, action="store_true",
+                        help="Print summary after running tests")
+    result.add_argument("--full-summary", default=False, action="store_true",
+                        help="Print summary and test output after running tests")
+    result.add_argument("--strict_only", default=False, action="store_true",
+                        help="Test only strict mode")
+    result.add_argument("--non_strict_only", default=False, action="store_true",
+                        help="Test only non-strict mode")
+    result.add_argument("--unmarked_default", default="both",
+                        help="default mode for tests of unspecified strictness")
+    result.add_argument("-j", "--job-count", default=None, action="store", type=int,
+                        help="Number of parallel test jobs to run. In case of '0' cpu count is used.")
+    result.add_argument("--logname", help="Filename to save stdout to")
+    result.add_argument("--loglevel", default="warning",
+                        help="sets log level to debug, info, warning, error, or critical")
+    result.add_argument("--print-handle", default="print",
+                        help="Command to print from console")
+    result.add_argument("--list-includes", default=False, action="store_true",
+                        help="List includes required by tests")
+    result.add_argument("--module-flag", default="-m",
+                        help="List includes required by tests")
+    result.add_argument("test_list", nargs='*', default=None)
     return result
 
 
@@ -417,8 +418,8 @@ class TempFile(object):
         try:
             self.close()
             os.unlink(self.name)
-        except OSError as exception:
-            logging.error("Error disposing temp file: %s", str(exception))
+        except OSError as os_error:
+            logging.error("Error disposing temp file: %s", str(os_error))
 
 
 class TestResult(object):
@@ -917,7 +918,8 @@ class TestSuite(object):
 def main():
     code = 0
     parser = build_options()
-    (options, args) = parser.parse_args()
+    options = parser.parse_args()
+    args = options.test_list
     validate_options(options)
 
     test_suite = TestSuite(options)
