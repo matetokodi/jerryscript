@@ -57,6 +57,9 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '>=3.0'
       - run: $RUNNER -q --jerry-tests
       - run: $RUNNER -q --unittests
 
@@ -64,6 +67,9 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '>=3.0'
       - run: $RUNNER -q --jerry-tests --build-debug
       - run: $RUNNER -q --unittests --build-debug
 
