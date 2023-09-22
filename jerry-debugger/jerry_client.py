@@ -104,7 +104,7 @@ class DebuggerPrompt(Cmd):
                     if res_type == result.END:
                         self.quit = True
                         return
-                    elif res_type == result.TEXT:
+                    if res_type == result.TEXT:
                         write(result.get_text())
                     elif res_type == result.PROMPT:
                         break
@@ -262,7 +262,7 @@ def src_check_args(args):
         print("Error: Non-negative integer number expected: %s" % (val_errno))
         return -1
 
-# pylint: disable=too-many-branches,too-many-locals,too-many-statements
+# pylint: disable=too-many-branches,too-many-locals,too-many-statements,import-outside-toplevel
 def main():
     args = jerry_client_main.arguments_parse()
 
@@ -325,7 +325,7 @@ def main():
 
         if res_type == result.END:
             break
-        elif res_type == result.PROMPT:
+        if res_type == result.PROMPT:
             prompt.cmdloop()
         elif res_type == result.TEXT:
             write(result.get_text())
@@ -339,7 +339,7 @@ if __name__ == "__main__":
         MSG = str(error_msg)
         if ERRNO == 111:
             sys.exit("Failed to connect to the JerryScript debugger.")
-        elif ERRNO == 32 or ERRNO == 104:
+        elif ERRNO in (32, 104):
             sys.exit("Connection closed.")
         else:
             sys.exit("Failed to connect to the JerryScript debugger.\nError: %s" % (MSG))

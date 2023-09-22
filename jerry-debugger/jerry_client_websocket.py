@@ -20,7 +20,7 @@ MAX_BUFFER_SIZE = 128
 WEBSOCKET_BINARY_FRAME = 2
 WEBSOCKET_FIN_BIT = 0x80
 
-class WebSocket(object):
+class WebSocket:
     def __init__(self, protocol):
 
         self.data_buffer = b""

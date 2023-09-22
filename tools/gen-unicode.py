@@ -45,7 +45,7 @@ UNICODE_PLANE_TYPE_SUPPLEMENTARY = 1
 
 # common code generation
 
-class UnicodeBasicSource(object):
+class UnicodeBasicSource:
     # pylint: disable=too-many-instance-attributes
     def __init__(self, filepath, character_type="uint16_t", length_type="uint8_t"):
         self._filepath = filepath
@@ -114,7 +114,7 @@ class UnicodeBasicSource(object):
             self._data.append("")  # for an extra empty line
 
     def generate(self):
-        with open(self._filepath, 'w') as generated_source:
+        with open(self._filepath, 'w', encoding='utf8') as generated_source:
             generated_source.write("\n".join(self._header))
             generated_source.write("\n".join(self._data))
 
@@ -127,14 +127,14 @@ class UnicodeSupplementarySource(UnicodeBasicSource):
     def add_whitepace_range(self, category, categorizer, units):
         self.add_range(category, categorizer.create_tables(units))
 
-class UnicodeBasicCategorizer(object):
+class UnicodeBasicCategorizer:
     def __init__(self):
         self._length_limit = 0xff
         self.extra_id_continue_units = set([0x200C, 0x200D])
 
     #pylint: disable=no-self-use
     def in_range(self, i):
-        return i >= 0x80 and i < 0x10000
+        return 0x80 <= i < 0x10000
 
     def _group_ranges(self, units):
         """
@@ -194,7 +194,7 @@ class UnicodeBasicCategorizer(object):
         #  <HEX>..<HEX>     ; <category> # <subcategory>
         matcher = r"(?P<start>[\dA-F]+)(?:\.\.(?P<end>[\dA-F]+))?\s+; (?P<category>[\w]+) # (?P<subcategory>[\w&]{2})"
 
-        with open(file_path, "r") as src_file:
+        with open(file_path, "r", encoding='utf8') as src_file:
             for line in src_file:
                 match = re.match(matcher, line)
 
@@ -227,7 +227,7 @@ class UnicodeBasicCategorizer(object):
         upper_case_mapping = {}
 
         # Add one-to-one mappings
-        with open(unicode_data_file) as unicode_data:
+        with open(unicode_data_file, encoding='utf8') as unicode_data:
             reader = csv.reader(unicode_data, delimiter=';')
 
             for line in reader:
@@ -246,7 +246,7 @@ class UnicodeBasicCategorizer(object):
                     lower_case_mapping[letter_id] = parse_unicode_sequence(small_letter)
 
         # Update the conversion tables with the special cases
-        with open(special_casing_file) as special_casing:
+        with open(special_casing_file, encoding='utf8') as special_casing:
             reader = csv.reader(special_casing, delimiter=';')
 
             for line in reader:
@@ -740,7 +740,7 @@ def generate_folding(script_args, plane_type):
 
     folding = {}
 
-    with open(case_folding_path, 'r') as case_folding:
+    with open(case_folding_path, 'r', encoding='utf8') as case_folding:
         case_folding_re = re.compile(r'(?P<code_point>[^;]*);\s*(?P<type>[^;]*);\s*(?P<folding>[^;]*);')
         for line in case_folding:
             match = case_folding_re.match(line)

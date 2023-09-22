@@ -17,7 +17,7 @@
 import select
 import serial
 
-class Serial(object):
+class Serial:
     """ Create a new socket using the given address family, socket type and protocol number. """
     def __init__(self, serial_config):
         config = serial_config.split(',')

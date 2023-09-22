@@ -30,7 +30,7 @@ JERRY_PORT = os.path.join(ROOT_DIR, 'jerry-port')
 JERRY_MATH = os.path.join(ROOT_DIR, 'jerry-math')
 
 
-class Amalgamator(object):
+class Amalgamator:
     # pylint: disable=too-many-instance-attributes
 
     _RE_INCLUDE = re.compile(r'\s*#include ("|<)(.*?)("|>)\n$')
@@ -92,7 +92,7 @@ class Amalgamator(object):
         self._emit_lineinfo(1, filename)
 
         line_idx = 0
-        with open(filename, 'r') as input_file:
+        with open(filename, 'r', encoding='utf8') as input_file:
             in_copyright = False
             for line in input_file:
                 line_idx += 1
@@ -242,7 +242,7 @@ def amalgamate(base_dir, input_files=(), output_file=None,
         for fname in sorted(c_files.values(), reverse=True):
             amalgam.add_file(fname)
 
-    with open(output_file, 'w') as output:
+    with open(output_file, 'w', encoding='utf8') as output:
         amalgam.write_output(output)
 
 

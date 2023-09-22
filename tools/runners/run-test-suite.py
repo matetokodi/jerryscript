@@ -22,7 +22,7 @@ import sys
 
 import util
 
-def get_arguments():
+def get_args():
     execution_runtime = os.environ.get('RUNTIME')
     parser = argparse.ArgumentParser()
     parser.add_argument('-q', '--quiet', action='store_true',
@@ -60,7 +60,7 @@ def get_tests(test_dir, test_list, skip_list):
 
     if test_list:
         dirname = os.path.dirname(test_list)
-        with open(test_list, "r") as test_list_fd:
+        with open(test_list, "r", encoding='utf8') as test_list_fd:
             for test in test_list_fd:
                 tests.append(os.path.normpath(os.path.join(dirname, test.rstrip())))
 
@@ -79,10 +79,10 @@ def execute_test_command(test_cmd):
     kwargs = {}
     if sys.version_info.major >= 3:
         kwargs['encoding'] = 'unicode_escape'
-    process = subprocess.Popen(test_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                               universal_newlines=True, **kwargs)
-    stdout = process.communicate()[0]
-    return (process.returncode, stdout)
+    with subprocess.Popen(test_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                          universal_newlines=True, **kwargs) as process:
+        stdout = process.communicate()[0]
+        return (process.returncode, stdout)
 
 
 def main(args):
@@ -212,4 +212,4 @@ def run_snapshot_tests(args, tests):
 
 
 if __name__ == "__main__":
-    sys.exit(main(get_arguments()))
+    sys.exit(main(get_args()))

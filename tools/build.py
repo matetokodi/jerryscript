@@ -272,10 +272,8 @@ def make_jerry(arguments):
     env = dict(os.environ)
     env['CMAKE_BUILD_PARALLEL_LEVEL'] = str(arguments.jobs)
     env['MAKEFLAGS'] = '-j%d' % (arguments.jobs) # Workaround for CMake < 3.12
-    proc = subprocess.Popen(make_cmd, env=env)
-    proc.wait()
-
-    return proc.returncode
+    with subprocess.Popen(make_cmd, env=env) as proc:
+        return proc.returncode
 
 def install_jerry(arguments):
     install_target = 'INSTALL' if os.path.exists(os.path.join(arguments.builddir, 'Jerry.sln')) else 'install'

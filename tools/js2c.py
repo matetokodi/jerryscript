@@ -57,7 +57,7 @@ def reduce_code(code):
 
 
 def js_to_native_code(path, name, build_type):
-    with open(path, 'r') as js_source:
+    with open(path, 'r', encoding='utf8') as js_source:
         code = js_source.read()
 
     if build_type != 'debug':
@@ -118,7 +118,7 @@ def main():
     gen_output.append("\n".join(gen_structs))
     gen_output.append(FOOTER)
 
-    with open(os.path.join(script_args.output_path, 'jerry-targetjs.h'), 'w') as gen_file:
+    with open(os.path.join(script_args.output_path, 'jerry-targetjs.h'), 'w', encoding='utf8') as gen_file:
         gen_file.write("\n".join(gen_output))
 
 

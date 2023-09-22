@@ -78,7 +78,7 @@ def main():
             for fname in files:
                 if any(fname.endswith(ext) for ext in EXTENSIONS):
                     fpath = os.path.join(root, fname)
-                    with io.open(fpath, 'r', errors='ignore') as curr_file:
+                    with io.open(fpath, 'r', errors='ignore', encoding='utf8') as curr_file:
                         if not LICENSE.search(curr_file.read()):
                             print('%s: incorrect license' % fpath)
                             is_ok = False

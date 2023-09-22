@@ -18,7 +18,7 @@ import struct
 
 MAX_BUFFER_SIZE = 256
 
-class RawPacket(object):
+class RawPacket:
     """ Simplified transmission layer. """
     def __init__(self, protocol):
         self.protocol = protocol

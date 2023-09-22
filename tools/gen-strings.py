@@ -23,10 +23,11 @@ except ImportError:
 
 import argparse
 import fileinput
-import subprocess
 import json
 import os
 import re
+import subprocess
+import sys
 
 from settings import FORMAT_SCRIPT, PROJECT_DIR
 
@@ -75,7 +76,7 @@ def read_magic_string_defs(debug, ini_path, item_name):
         for str_ref, str_value in [x for x in defs if len(x[1]) > LIMIT_MAGIC_STR_LENGTH]:
             print("error: The maximum allowed magic string size is {limit} but {str_ref} is {str_len} long.".format(
                 limit=LIMIT_MAGIC_STR_LENGTH, str_ref=str_ref, str_len=len(str_value)))
-        exit(1)
+        sys.exit(1)
 
     if debug:
         print('debug: magic string definitions: {dump}'
@@ -294,7 +295,7 @@ def generate_magic_strings(args, ini_path, item_name, pattern, inc_h_path, def_m
 
     extended_defs = calculate_magic_string_guards(defs, uses, debug=args.debug)
 
-    with open(inc_h_path, 'w') as gen_file:
+    with open(inc_h_path, 'w', encoding='utf8') as gen_file:
         generate_header(gen_file, ini_path)
         generate_magic_string_defs(gen_file, extended_defs, def_macro)
         if with_size_macro:

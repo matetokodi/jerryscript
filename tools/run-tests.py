@@ -26,7 +26,7 @@ import sys
 import settings
 
 if sys.version_info.major >= 3:
-    import runners.util as util  # pylint: disable=import-error
+    from runners import util
 else:
     sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/runners')
     import util
@@ -284,8 +284,7 @@ def iterate_test_runner_jobs(jobs, options):
         if build_dir_path in tested_paths:
             sys.stderr.write('(skipping: already tested with %s)\n' % build_dir_path)
             continue
-        else:
-            tested_paths.add(build_dir_path)
+        tested_paths.add(build_dir_path)
 
         bin_path = get_binary_path(build_dir_path)
         bin_hash = hash_binary(bin_path)
@@ -293,8 +292,7 @@ def iterate_test_runner_jobs(jobs, options):
         if bin_hash in tested_hashes:
             sys.stderr.write('(skipping: already tested with equivalent %s)\n' % tested_hashes[bin_hash])
             continue
-        else:
-            tested_hashes[bin_hash] = build_dir_path
+        tested_hashes[bin_hash] = build_dir_path
 
         test_cmd = util.get_python_cmd_prefix()
         test_cmd.extend([settings.TEST_RUNNER_SCRIPT, '--engine', bin_path])
@@ -309,9 +307,9 @@ def run_check(runnable, env=None):
         full_env.update(env)
         env = full_env
 
-    proc = subprocess.Popen(runnable, env=env)
-    proc.wait()
-    return proc.returncode
+    with subprocess.Popen(runnable, env=env) as proc:
+        proc.wait()
+        return proc.returncode
 
 def run_jerry_debugger_tests(options):
     ret_build = ret_test = 0
@@ -356,7 +354,7 @@ def run_jerry_tests(options):
         skip_list = []
 
         if job.name == 'jerry_tests-snapshot':
-            with open(settings.SNAPSHOT_TESTS_SKIPLIST, 'r') as snapshot_skip_list:
+            with open(settings.SNAPSHOT_TESTS_SKIPLIST, 'r', encoding='utf8') as snapshot_skip_list:
                 for line in snapshot_skip_list:
                     skip_list.append(line.rstrip())
 

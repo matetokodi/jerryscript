@@ -24,7 +24,7 @@ import shlex
 import sys
 
 
-class DoctestExtractor(object):
+class DoctestExtractor:
     """
     An extractor to process Markdown files and find doctests inside.
     """
@@ -101,7 +101,7 @@ class DoctestExtractor(object):
         if self._dry:
             print('%s %s' % (action, outname))
         else:
-            with open(outname, 'w') as outfile:
+            with open(outname, 'w', encoding='utf8') as outfile:
                 outfile.writelines(code)
 
     def process(self, infile):
