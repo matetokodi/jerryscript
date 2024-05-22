@@ -302,3 +302,6 @@ endif()
 if(DOCTESTS)
   add_subdirectory(tests/unit-doc)
 endif()
+
+message("Compiler ID: ${CMAKE_C_COMPILER_ID}")
+message("Compiler Version: ${CMAKE_C_COMPILER_VERSION}")
