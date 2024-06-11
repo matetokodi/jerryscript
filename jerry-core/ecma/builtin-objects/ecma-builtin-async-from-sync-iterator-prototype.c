@@ -149,6 +149,11 @@ ecma_builtin_async_from_sync_iterator_prototype_next (ecma_async_from_sync_itera
   ecma_value_t next_result =
     ecma_op_iterator_next (iter_p->header.u.cls.u3.sync_iterator, iter_p->sync_next_method, value);
 
+  if (!ecma_is_value_object (next_result))
+  {
+    return ecma_raise_type_error (ECMA_ERR_ITERATOR_RETURN_RESULT_IS_NOT_OBJECT);
+  }
+
   /* 6. */
   if (ECMA_IS_VALUE_ERROR (ecma_op_if_abrupt_reject_promise (&next_result, capability_p)))
   {
